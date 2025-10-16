@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import FeaturesSection from '../components/FeaturesSection';
+import { Link } from 'react-router-dom';
 
 export default function HomePage() {
   const aboutSectionRef = useRef(null);
@@ -15,7 +16,6 @@ export default function HomePage() {
 
   return (
     <main className="bg-slate-950">
-      <Header />
       <HeroSection scrollToAbout={scrollToAbout} />
       <FeaturesSection sectionRef={aboutSectionRef} />
 
@@ -30,9 +30,9 @@ export default function HomePage() {
             Присоединяйтесь к сообществу сетевых инженеров
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-slate-950 text-emerald-500 rounded-lg font-bold hover:bg-slate-900 transition-all hover:shadow-2xl font-mono">
+            <Link to="/register" className="px-8 py-4 bg-slate-950 text-emerald-500 rounded-lg font-bold hover:bg-slate-900 transition-all hover:shadow-2xl font-mono">
               {'$ ./register.sh'}
-            </button>
+            </Link>
             <button className="px-8 py-4 bg-transparent text-white rounded-lg font-bold border-2 border-white hover:bg-white hover:text-emerald-600 transition-all font-mono">
               {'$ man netlearn'}
             </button>
