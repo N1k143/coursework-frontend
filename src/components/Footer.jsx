@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-br from-slate-900 to-slate-800 text-white">

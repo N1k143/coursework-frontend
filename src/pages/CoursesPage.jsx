@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import NetworkBackground from "../components/NetworkBackground";
+import { Link } from 'react-router-dom';
 
 export default function CoursesPage() {
   const courses = [
@@ -189,7 +190,7 @@ export default function CoursesPage() {
                       ></div>
                     </div>
                   </div>
-
+                  <Link to="/course">
                   <button className="w-full px-4 py-3 bg-gradient-to-r bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/30 font-mono text-sm group/btn relative overflow-hidden">
                     <span className="relative z-10 flex cursor-pointer items-center justify-center gap-2">
                       {course.progress > 0 ? (
@@ -206,6 +207,7 @@ export default function CoursesPage() {
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-emerald-300 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
                   </button>
+                  </Link>
                 </div>
               </div>
             ))}

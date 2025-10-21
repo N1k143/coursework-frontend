@@ -7,6 +7,10 @@ import RegisterPage from './pages/RegisterPage'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop';
+import CoursePlayerPage from './pages/CoursePlayerPage'
+import ProfilePage from './pages/ProfilePage'
+import EditProfilePage from './pages/EditProfilePage'
+import AboutPage from './pages/AboutPage'
 
 function App() {
 
@@ -19,6 +23,10 @@ function App() {
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/course" element={<CoursePlayerPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/editprofile" element={<EditProfilePage />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
       <Footer/>
     </div>
