@@ -11,6 +11,7 @@ import CoursePlayerPage from './pages/CoursePlayerPage'
 import ProfilePage from './pages/ProfilePage'
 import EditProfilePage from './pages/EditProfilePage'
 import AboutPage from './pages/AboutPage'
+import AdminPanelPage from './pages/AdminPanelPage'
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/editprofile" element={<EditProfilePage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/admin" element={<AdminPanelPage />} />
       </Routes>
       <Footer/>
     </div>

@@ -10,7 +10,7 @@ export default function Footer() {
 
           <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
-              <span className="text-2xl font-bold font-mono">РастХерня</span>
+              <span className="text-2xl font-bold font-mono">NetLearn</span>
             </div>
             <p className="text-slate-300 leading-relaxed max-w-md font-mono text-sm">
               Современная платформа для изучения сетевых технологий. 
