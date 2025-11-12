@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../services/api';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const isAuthenticated = authAPI.isAuthenticated();
+  const currentUser = authAPI.getCurrentUser();
+
+  const handleLogout = () => {
+    authAPI.logout();
+    closeMobileMenu();
+    navigate('/login');
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -33,9 +43,30 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-8">
             <Link to="/courses" className="text-slate-400 hover:text-emerald-500 transition-colors font-mono text-sm">{'<Курсы/>'}</Link>
             <Link to="/about" className="text-slate-400 hover:text-emerald-500 transition-colors font-mono text-sm">{'<О нас/>'}</Link>
-            <Link to="/login" className="px-5 py-2 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-sm">
-              $ login
-            </Link>
+
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <Link 
+                  to="/profile" 
+                  className="px-5 py-2 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-sm"
+                >
+                  $ profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-5 py-2 bg-transparent text-red-400 rounded-lg font-semibold hover:bg-red-500/10 transition-colors font-mono text-sm border border-red-500/50"
+                >
+                  $ logout
+                </button>
+              </div>
+            ) : (
+              <Link 
+                to="/login" 
+                className="px-5 py-2 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-sm"
+              >
+                $ login
+              </Link>
+            )}
           </div>
 
           <button
@@ -43,15 +74,9 @@ export default function Header() {
             onClick={toggleMobileMenu}
             aria-label="Открыть меню"
           >
-            <span
-              className="block w-6 h-0.5 bg-emerald-500 transition-transform duration-300"
-            ></span>
-            <span
-              className="block w-6 h-0.5 bg-emerald-500 transition-opacity duration-300"
-            ></span>
-            <span
-              className="block w-6 h-0.5 bg-emerald-500 transition-transform duration-300"
-            ></span>
+            <span className="block w-6 h-0.5 bg-emerald-500 transition-transform duration-300"></span>
+            <span className="block w-6 h-0.5 bg-emerald-500 transition-opacity duration-300"></span>
+            <span className="block w-6 h-0.5 bg-emerald-500 transition-transform duration-300"></span>
           </button>
         </div>
 
@@ -75,15 +100,37 @@ export default function Header() {
             >
               {'<О нас/>'}
             </Link>
-            <div className="flex justify-center pt-4">
-              <Link
-                to="/login"
-                className="px-8 py-3 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-lg"
-                onClick={closeMobileMenu}
-              >
-                $ login
-              </Link>
-            </div>
+
+            {isAuthenticated ? (
+              <div className="flex flex-col gap-4 pt-4">
+                <Link
+                  to="/profile"
+                  className="px-8 py-3 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-lg text-center"
+                  onClick={closeMobileMenu}
+                >
+                  $ profile
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="px-8 py-3 bg-transparent text-red-400 rounded-lg font-semibold hover:bg-red-500/10 transition-colors font-mono text-lg border border-red-500/50"
+                >
+                  $ logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex justify-center pt-4">
+                <Link
+                  to="/login"
+                  className="px-8 py-3 bg-emerald-500 text-slate-950 rounded-lg font-semibold hover:bg-emerald-400 transition-colors font-mono text-lg"
+                  onClick={closeMobileMenu}
+                >
+                  $ login
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </nav>
