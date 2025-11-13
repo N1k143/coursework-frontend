@@ -198,7 +198,6 @@ export default function LoginPage() {
               <div className="text-slate-400 space-y-1">
                 <div>• Используйте ваши учетные данные</div>
                 <div>• Пароль защищен шифрованием</div>
-                <div>• Сессия активна 24 часа</div>
                 <div>• Для теста используйте данные из регистрации</div>
               </div>
             </div>
