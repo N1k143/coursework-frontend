@@ -32,6 +32,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd home/srvcontrol/srv
+            cd /home/srvcontrol/srv
             docker pull ghcr.io/hadcrab/frontend:latest
             docker compose up -d frontend
