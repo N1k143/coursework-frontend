@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NetworkBackground from '../components/NetworkBackground';
-import { authAPI, userAPI, coursesAPI, handleApiError } from '../services/api';
+import { authAPI, userAPI, coursesAPI, progressAPI, handleApiError } from '../services/api';
 import { Camera } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -19,96 +19,144 @@ export default function ProfilePage() {
   }, []);
 
   const loadProfileData = async () => {
-  if (!authAPI.isAuthenticated()) {
-    navigate('/login');
-    return;
-  }
+    if (!authAPI.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
 
-  setLoading(true);
-  setError('');
+    setLoading(true);
+    setError('');
 
-  try {
-    const currentUser = authAPI.getCurrentUser();
-    if (!currentUser) throw new Error('Пользователь не найден');
+    try {
+      const currentUser = authAPI.getCurrentUser();
+      if (!currentUser) throw new Error('Пользователь не найден');
 
-    const user = await userAPI.getById(currentUser.id);
+      const user = await userAPI.getById(currentUser.id);
 
-    localStorage.setItem('userData', JSON.stringify(user));
+      authAPI.saveAuthData(localStorage.getItem('authToken'), user);
 
-    const allCourses = await coursesAPI.getAll();
-    const userCourses = allCourses;
-    const completedCourses = userCourses.filter(course => (course.progress || 0) >= 100);
-    const activeCourses = userCourses.filter(course => (course.progress || 0) < 100);
-    const totalProgress = userCourses.length > 0 
-      ? Math.round(userCourses.reduce((sum, course) => sum + (course.progress || 0), 0) / userCourses.length)
-      : 0;
+      const allCourses = await coursesAPI.getAll();
 
-    setUserData({
-      username: user.username,
-      email: user.email,
-      joinDate: formatJoinDate(user.createdAt),
-      level: calculateLevel(totalProgress),
-      progress: totalProgress,
-      completedCourses: completedCourses.length,
-      activeCourses: activeCourses.length,
-      avatarUrl: user.avatarUrl, 
-      id: user.id 
-    });
+      const coursesWithProgressPromises = allCourses.map(async (course) => {
+        try {
+          const progressData = await progressAPI.getByCourse(course.id);
 
-    setUserCourses(userCourses);
+          let progressPercentage = 0;
+          if (progressData.status === 'completed') {
+            progressPercentage = 100;
+          } else if (progressData.status === 'in_progress') {
+            progressPercentage = 50;
+          } else {
+            progressPercentage = 0;
+          }
+          
+          return { 
+            ...course, 
+            progress: progressPercentage,
+            status: progressData.status 
+          };
+        } catch (err) {
+          return { 
+            ...course, 
+            progress: 0,
+            status: 'not_started' 
+          };
+        }
+      });
+      
+      const coursesWithProgress = await Promise.all(coursesWithProgressPromises);
 
-  } catch (err) {
-    console.error('Ошибка загрузки профиля:', err);
-    setError(handleApiError(err, 'Не удалось загрузить данные профиля'));
-  } finally {
-    setLoading(false);
-  }
-};
+      const enrolledCourseIds = user.enrollments?.map(e => e.courseId) || [];
+
+      const userEnrolledCourses = coursesWithProgress.filter(course =>
+        enrolledCourseIds.includes(course.id)
+      );
+
+      
+      const completedCoursesCount = userEnrolledCourses.filter(course => course.progress >= 100).length;
+      const activeCoursesCount = userEnrolledCourses.filter(course => course.progress > 0 && course.progress < 100).length;
+      
+      const totalProgress = userEnrolledCourses.length > 0 
+        ? Math.round(userEnrolledCourses.reduce((sum, course) => sum + course.progress, 0) / userEnrolledCourses.length)
+        : 0;
+
+      setUserData({
+        username: user.username || 'Пользователь',
+        email: user.email,
+        joinDate: formatJoinDate(user.createdAt),
+        level: calculateLevel(totalProgress),
+        progress: totalProgress,
+        completedCourses: completedCoursesCount,
+        activeCourses: activeCoursesCount,
+        avatarUrl: user.avatarUrl, 
+        id: user.id 
+      });
+
+      setUserCourses(userEnrolledCourses);
+
+    } catch (err) {
+      console.error('Ошибка загрузки профиля:', err);
+      const errorMsg = handleApiError(err, 'Не удалось загрузить данные профиля');
+      setError(errorMsg);
+
+      const currentUser = authAPI.getCurrentUser();
+      if (currentUser) {
+        setUserData({
+          username: currentUser.username || 'Пользователь',
+          email: currentUser.email,
+          joinDate: new Date().toLocaleDateString('ru-RU'),
+          level: 'Начинающий',
+          progress: 0,
+          completedCourses: 0,
+          activeCourses: 0,
+          avatarUrl: currentUser.avatarUrl, 
+          id: currentUser.id 
+        });
+        setUserCourses([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAvatarChange = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-  if (!file.type.startsWith('image/')) {
-    setError('Пожалуйста, выберите изображение');
-    return;
-  }
+    if (!file.type.startsWith('image/')) {
+      setError('Пожалуйста, выберите изображение');
+      return;
+    }
 
-  setAvatarLoading(true);
+    setAvatarLoading(true);
+    setError('');
 
-  try {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const avatarUrl = e.target.result;
+    try {
+      const reader = new FileReader();
       
-      try {
+      reader.onloadend = async () => {
+        const avatarUrl = reader.result;
+        
         const currentUser = authAPI.getCurrentUser();
+        if (!currentUser) throw new Error('Пользователь не найден');
+
         await userAPI.update(currentUser.id, { avatarUrl });
 
-        const updatedUserData = { 
-          ...currentUser, 
-          avatarUrl 
-        };
-        localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        const updatedUser = { ...currentUser, avatarUrl };
+        authAPI.saveAuthData(localStorage.getItem('authToken'), updatedUser);
 
-        const updatedUser = { ...userData, avatarUrl };
-        setUserData(updatedUser);
-        
-      } catch (error) {
-        console.error('Ошибка обновления аватара на сервере:', error);
-        setError('Не удалось сохранить аватар');
-      }
+        setUserData(prev => ({ ...prev, avatarUrl }));
+        setAvatarLoading(false);
+      };
       
+      reader.readAsDataURL(file);
+      
+    } catch (err) {
+      console.error('Ошибка загрузки или обновления аватара:', err);
+      setError(handleApiError(err, 'Не удалось обновить аватар'));
       setAvatarLoading(false);
-    };
-    reader.readAsDataURL(file);
-
-  } catch (err) {
-    console.error('Ошибка загрузки аватара:', err);
-    setError('Не удалось загрузить аватар');
-    setAvatarLoading(false);
-  }
-};
+    }
+  };
 
   const formatJoinDate = (dateString) => {
     if (!dateString) return new Date().toLocaleDateString('ru-RU');
@@ -121,8 +169,8 @@ export default function ProfilePage() {
     return "Начинающий";
   };
 
-  const currentCourses = userCourses.filter(course => (course.progress || 0) < 100);
-  const completedCourses = userCourses.filter(course => (course.progress || 0) >= 100);
+  const currentCourses = userCourses.filter(course => course.progress < 100);
+  const completedCourses = userCourses.filter(course => course.progress >= 100);
 
   const handleLogout = () => {
     authAPI.logout();
@@ -179,9 +227,9 @@ export default function ProfilePage() {
             </h1>
             
             {error && (
-              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg max-w-md mx-auto">
-                <div className="text-red-400 font-mono text-sm">
-                  <span className="text-red-500">⚠</span> {error}
+              <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg max-w-md mx-auto">
+                <div className="text-yellow-400 font-mono text-sm">
+                  <span className="text-yellow-500">⚠</span> {error}
                 </div>
               </div>
             )}
@@ -318,7 +366,7 @@ export default function ProfilePage() {
                             ></div>
                           </div>
                           <Link 
-                            to={`/courses/${course.id}/learn`}
+                            to={`/course/${course.id}`}
                             className="inline-block w-full px-4 py-2 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-sm hover:bg-emerald-400 transition-all text-center"
                           >
                             $ continue.sh

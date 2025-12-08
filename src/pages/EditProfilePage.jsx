@@ -57,6 +57,8 @@ export default function EditProfilePage() {
       ...formData,
       [e.target.name]: e.target.value
     });
+    if (error) setError('');
+    if (success) setSuccess('');
   };
 
   const handleSubmit = async (e) => {
@@ -69,12 +71,19 @@ export default function EditProfilePage() {
       const currentUser = authAPI.getCurrentUser();
       if (!currentUser) throw new Error('Пользователь не найден');
 
-      const updateData = {
-        username: formData.username,
-        email: formData.email
-      };
+      const updateData = {};
+
+      if (formData.username !== currentUser.username) {
+        updateData.username = formData.username;
+      }
+      if (formData.email !== currentUser.email) {
+        updateData.email = formData.email;
+      }
 
       if (formData.newPassword) {
+        if (formData.newPassword.length < 8) {
+          throw new Error('Новый пароль должен содержать минимум 8 символов');
+        }
         if (formData.newPassword !== formData.confirmPassword) {
           throw new Error('Новые пароли не совпадают');
         }
@@ -85,18 +94,25 @@ export default function EditProfilePage() {
         updateData.newPassword = formData.newPassword;
       }
 
-      await userAPI.update(currentUser.id, updateData);
+      if (Object.keys(updateData).length > 0) {
+        await userAPI.update(currentUser.id, updateData);
 
-      const updatedUser = { ...currentUser, ...updateData };
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
+        const updatedUserInLocalStorage = { ...currentUser, ...updateData };
+        delete updatedUserInLocalStorage.currentPassword;
+        delete updatedUserInLocalStorage.newPassword;
+        authAPI.saveAuthData(localStorage.getItem('authToken'), updatedUserInLocalStorage);
+        
+        setSuccess('Профиль успешно обновлен!');
+        setFormData(prev => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        }));
+      } else {
+        setSuccess('Нет изменений для сохранения.');
+      }
 
-      setSuccess('Профиль успешно обновлен!');
-      setFormData(prev => ({
-        ...prev,
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      }));
 
     } catch (err) {
       console.error('Ошибка сохранения профиля:', err);
