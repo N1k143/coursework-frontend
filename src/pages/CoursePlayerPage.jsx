@@ -1,3 +1,4 @@
+// CoursePlayerPage.js - упрощаем
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import 'highlight.js/styles/vs2015.css';
@@ -6,6 +7,7 @@ import { coursesAPI, sectionsAPI, lessonsAPI, progressAPI, handleApiError } from
 
 import CourseNavigation from '../components/CourseNavigation';
 import LessonViewer from '../components/LessonViewer';
+import QuizComponent from '../components/QuizComponent';
 
 export default function CoursePlayerPage() {
   const { courseId } = useParams();
@@ -18,6 +20,7 @@ export default function CoursePlayerPage() {
   const [courseProgress, setCourseProgress] = useState(null); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showQuizView, setShowQuizView] = useState(false);
 
   const loadCourseData = useCallback(async () => {
     if (!courseId) {
@@ -70,7 +73,6 @@ export default function CoursePlayerPage() {
       let foundLesson = null;
       let foundSectionId = null;
 
-
       if (totalLessons > 0) {
         for (const section of sortedSections) {
           const sectionLessons = lessonsMap[section.id] || [];
@@ -109,6 +111,7 @@ export default function CoursePlayerPage() {
 
     setCurrentSectionId(sectionId);
     setCurrentLesson(lesson);
+    setShowQuizView(false); // Сбрасываем показ теста при выборе нового урока
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -188,14 +191,23 @@ export default function CoursePlayerPage() {
     }
   };
 
+  const handleOpenTest = () => {
+    setShowQuizView(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCloseQuiz = () => {
+    setShowQuizView(false);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 pt-32 flex items-center justify-center">
+      <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mb-4"></div>
-          <div className="text-emerald-500 font-mono text-lg">Загрузка курса...</div>
+          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="text-emerald-500 font-mono text-xl mt-4">$ loading_course...</div>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -257,13 +269,24 @@ export default function CoursePlayerPage() {
           />
 
           <div className="lg:col-span-3">
-            <LessonViewer
-              courseId={courseId}
-              currentSectionId={currentSectionId}
-              currentLesson={currentLesson || {}}
-              onMarkComplete={handleMarkComplete}
-              onNavigate={handleNavigate}
-            />
+            {showQuizView ? (
+              <QuizComponent
+                courseId={courseId}
+                sectionId={currentSectionId}
+                lessonId={currentLesson?.id}
+                onComplete={handleMarkComplete}
+                onClose={handleCloseQuiz}
+              />
+            ) : (
+              <LessonViewer
+                courseId={courseId}
+                currentSectionId={currentSectionId}
+                currentLesson={currentLesson || {}}
+                onMarkComplete={handleMarkComplete}
+                onNavigate={handleNavigate}
+                onOpenTest={handleOpenTest} // Передаем функцию открытия теста
+              />
+            )}
           </div>
         </div>
       </div>

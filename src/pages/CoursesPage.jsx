@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import NetworkBackground from "../components/NetworkBackground";
 import { Link, useNavigate } from 'react-router-dom';
 import { coursesAPI, enrollmentsAPI, authAPI, userAPI, progressAPI, handleApiError } from '../services/api';
 import { Network, ShieldCheck, Code2 } from 'lucide-react';
+import ToastContainer from '../components/Toast';
 
 export default function CoursesPage() {
   const navigate = useNavigate();
@@ -13,6 +13,16 @@ export default function CoursesPage() {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
   const [enrollingCourseId, setEnrollingCourseId] = useState(null);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type = 'info') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
 
   useEffect(() => {
     loadCoursesWithEnrollment();
@@ -92,7 +102,6 @@ export default function CoursesPage() {
         progress: course.progress,
         progressPercentage: course.progressPercentage,
         isEnrolled: course.isEnrolled,
-        level: getLevel(course.difficulty),
         icon: getIconByCategory(course.category),
         category: course.category || 'other'
       }));
@@ -116,22 +125,31 @@ export default function CoursesPage() {
     }
   };
 
+  const getCategoryName = (category) => {
+    switch(category) {
+      case 'programming': return 'programming';
+      case 'networking': return 'networking';
+      case 'cybersecurity': return 'cybersecurity';
+      default: return 'Другое';
+    }
+  };
+
   const handleEnroll = async (courseId) => {
     const user = authAPI.getCurrentUser();
     if (!user) {
-      alert('Пожалуйста, войдите в систему, чтобы записаться на курс.');
+      addToast('Пожалуйста, войдите в систему, чтобы записаться на курс.', 'error');
       navigate('/login');
       return;
     }
 
     setEnrollingCourseId(courseId);
 
-    try {
+     try {
       await enrollmentsAPI.enroll(courseId, String(user.id));
-      alert('Вы успешно записаны на курс!');
+      addToast('Вы успешно записаны на курс!', 'success');
       await loadCoursesWithEnrollment();
     } catch (err) {
-      alert(handleApiError(err, 'Не удалось записаться на курс.'));
+      addToast(handleApiError(err, 'Не удалось записаться на курс.'), 'error');
     } finally {
       setEnrollingCourseId(null);
     }
@@ -168,10 +186,7 @@ export default function CoursesPage() {
 
   const filteredCourses = courses.filter(course => {
     if (filter === 'all') return true;
-    if (filter === 'beginner') return course.level === 'Начальный';
-    if (filter === 'intermediate') return course.level === 'Средний';
-    if (filter === 'advanced') return course.level === 'Продвинутый';
-    return true;
+    return course.category === filter;
   });
 
   const stats = {
@@ -179,9 +194,9 @@ export default function CoursesPage() {
     enrolled: courses.filter(c => c.isEnrolled).length,
     completed: courses.filter(c => c.progress === 'completed').length,
     inProgress: courses.filter(c => c.progress === 'in_progress').length,
-    beginner: courses.filter(c => c.level === 'Начальный').length,
-    intermediate: courses.filter(c => c.level === 'Средний').length,
-    advanced: courses.filter(c => c.level === 'Продвинутый').length
+    programming: courses.filter(c => c.category === 'programming').length,
+    networking: courses.filter(c => c.category === 'networking').length,
+    cybersecurity: courses.filter(c => c.category === 'cybersecurity').length
   };
 
   const mapProgressValue = (status) => {
@@ -249,44 +264,47 @@ export default function CoursesPage() {
               $ ls -la courses/
             </button>
             <button 
-              onClick={() => setFilter('beginner')}
+              onClick={() => setFilter('programming')}
               className={`group cursor-pointer px-5 py-2.5 rounded-lg font-bold transition-all duration-300 font-mono text-sm flex items-center gap-2 ${
-                filter === 'beginner' 
+                filter === 'programming' 
                   ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50' 
                   : 'bg-slate-900 text-slate-300 border border-emerald-500/30 hover:border-emerald-500 hover:bg-slate-800/80'
               }`}
             >
-              <span>└──</span>
-              beginner ({stats.beginner})
+              <Code2 className="w-4 h-4" />
+              programming ({stats.programming})
             </button>
             <button 
-              onClick={() => setFilter('intermediate')}
+              onClick={() => setFilter('networking')}
               className={`group cursor-pointer px-5 py-2.5 rounded-lg font-bold transition-all duration-300 font-mono text-sm flex items-center gap-2 ${
-                filter === 'intermediate' 
+                filter === 'networking' 
                   ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50' 
                   : 'bg-slate-900 text-slate-300 border border-emerald-500/30 hover:border-emerald-500 hover:bg-slate-800/80'
               }`}
             >
-              <span>└──</span>
-              intermediate ({stats.intermediate})
+              <Network className="w-4 h-4" />
+              networking ({stats.networking})
             </button>
             <button 
-              onClick={() => setFilter('advanced')}
+              onClick={() => setFilter('cybersecurity')}
               className={`group cursor-pointer px-5 py-2.5 rounded-lg font-bold transition-all duration-300 font-mono text-sm flex items-center gap-2 ${
-                filter === 'advanced' 
+                filter === 'cybersecurity' 
                   ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50' 
                   : 'bg-slate-900 text-slate-300 border border-emerald-500/30 hover:border-emerald-500 hover:bg-slate-800/80'
               }`}
             >
-              <span>└──</span>
-              advanced ({stats.advanced})
+              <ShieldCheck className="w-4 h-4" />
+              cybersecurity ({stats.cybersecurity})
             </button>
           </div>
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="text-emerald-500 font-mono text-xl mb-4">$ loading_courses...</div>
-            </div>
+            <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <div className="text-emerald-500 font-mono text-xl mt-4">$ loading_courses...</div>
+              </div>
+            </main>
           ) : error && courses.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-red-500 font-mono text-lg mb-4">Ошибка загрузки</div>
@@ -312,13 +330,6 @@ export default function CoursesPage() {
                       <div className="text-3xl">
                         {course.icon}
                       </div>
-                      <span className={`px-2 py-1 rounded text-xs font-mono border ${
-                        course.level === 'Начальный' ? 'bg-green-500/10 text-green-500 border-green-500/30' :
-                        course.level === 'Средний' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30' :
-                        'bg-red-500/10 text-red-500 border-red-500/30'
-                      }`}>
-                        {course.level}
-                      </span>
                     </div>
 
                     <h3 className="text-lg font-bold text-white mb-2 font-mono group-hover:text-emerald-400 transition-colors duration-300">
@@ -379,7 +390,7 @@ export default function CoursesPage() {
                         course.category === 'cybersecurity' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
                         'bg-purple-500/10 text-purple-400 border-purple-500/30'
                       }`}>
-                        {course.category}
+                        {getCategoryName(course.category)}
                       </div>
                     </div>
 
@@ -463,6 +474,7 @@ export default function CoursesPage() {
           )}
         </div>
       </main>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   );
 }

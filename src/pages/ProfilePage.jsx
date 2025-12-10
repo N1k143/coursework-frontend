@@ -185,8 +185,8 @@ export default function ProfilePage() {
     return (
       <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden flex items-center justify-center">
         <div className="text-center">
-          <div className="text-emerald-500 font-mono text-xl mb-4">$ loading_profile...</div>
           <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="text-emerald-500 font-mono text-xl mt-4">$ loading_profile...</div>
         </div>
       </main>
     );

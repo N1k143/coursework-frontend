@@ -62,39 +62,33 @@ async function apiRequest(endpoint, options = {}) {
 
 // ============ АУТЕНТИФИКАЦИЯ ============
 export const authAPI = {
-    // POST /auth/register
     register: (userData) => apiRequest('/auth/register', {
         method: 'POST',
         body: userData
     }),
 
-    // POST /auth/login
     login: (credentials) => apiRequest('/auth/login', {
         method: 'POST',
         body: credentials
     }),
 
-    // Сохранение данных авторизации
     saveAuthData: (token, user) => {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userData', JSON.stringify(user));
         console.log('Auth data saved:', { user });
     },
 
-    // Выход из системы
     logout: () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
         console.log('User logged out');
     },
 
-    // Получение текущего пользователя
     getCurrentUser: () => {
         const userStr = localStorage.getItem('userData');
         return userStr ? JSON.parse(userStr) : null;
     },
 
-    // Проверка аутентификации
     isAuthenticated: () => {
         return !!localStorage.getItem('authToken');
     }
@@ -102,25 +96,20 @@ export const authAPI = {
 
 // ============ ПОЛЬЗОВАТЕЛИ ============
 export const userAPI = {
-    // GET /users
     getAll: () => apiRequest('/users'),
 
-    // GET /users/:id
     getById: (id) => apiRequest(`/users/${id}`),
 
-    // POST /users
     create: (userData) => apiRequest('/users', {
         method: 'POST',
         body: userData
     }),
 
-    // PUT /users/:id
     update: (id, userData) => apiRequest(`/users/${id}`, {
         method: 'PUT',
         body: userData
     }),
 
-    // DELETE /users/:id
     delete: (id) => apiRequest(`/users/${id}`, {
         method: 'DELETE'
     })
@@ -128,10 +117,8 @@ export const userAPI = {
 
 // ============ КУРСЫ ============
 export const coursesAPI = {
-    // GET /courses
     getAll: () => apiRequest('/courses'),
 
-    // GET /courses/:id
     getById: (id) => apiRequest(`/courses/${id}`),
 };
 
@@ -142,74 +129,63 @@ export const enrollmentsAPI = {
     body: { userId }
   }),
 
-  getEnrolledCourseByUserId: (userId) => apiRequest(`/users/${userId}/enrollment`)
+  getEnrolledCourseByUserId: (userId) => apiRequest(`/users/${userId}/enrollment`),
+  
+  unenroll: (courseId, userId) => apiRequest(`/courses/${courseId}/enrollments`, {
+    method: 'DELETE',
+    body: { userId }
+  })
 };
 
 
 
 // ============ РАЗДЕЛЫ КУРСОВ ============
 export const sectionsAPI = {
-    // GET /courses/:courseId/sections
     getByCourse: (courseId) => apiRequest(`/courses/${courseId}/sections`),
 
-    // GET /courses/:courseId/sections/:sectionId
     getById: (courseId, sectionId) => apiRequest(`/courses/${courseId}/sections/${sectionId}`),
 };
 
 // ============ УРОКИ ============
 export const lessonsAPI = {
-    // GET /courses/:courseId/sections/:sectionId/lessons
     getBySection: (courseId, sectionId) => apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons`),
 
-    // GET /courses/:courseId/sections/:sectionId/lessons/:lessonId
     getById: (courseId, sectionId, lessonId) => apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}`),
 };
 
 // ============ ПРОГРЕСС КУРСОВ ============
 export const progressAPI = {
-  // GET /courses/:courseId/progress
   getByCourse: (courseId) => apiRequest(`/courses/${courseId}/progress`),
 
-  // PUT /courses/:courseId/progress - КОРРЕКТНЫЙ ФОРМАТ
   update: (courseId, progressData) => apiRequest(`/courses/${courseId}/progress`, {
     method: 'PUT',
-    body: progressData // Просто объект, без обертки body
+    body: progressData 
   })
 };
 
 // ============ ВИКТОРИНЫ ============
 export const quizzesAPI = {
-    // GET /courses/:courseId/sections/:sectionId/lessons/:lessonId/quizzes
-    getByLesson: (courseId, sectionId, lessonId) => apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes`),
+    getByLesson: (courseId, sectionId, lessonId) => 
+        apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes`),
 
-    // GET /courses/:courseId/sections/:sectionId/lessons/:lessonId/quizzes/:quizId
-    getById: (courseId, sectionId, lessonId, quizId) => apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}`),
-};
+    getById: (courseId, sectionId, lessonId, quizId) => 
+        apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}`),
 
-// ============ ВОПРОСЫ ВИКТОРИН ============
-export const questionsAPI = {
-    // GET /courses/:courseId/sections/:sectionId/lessons/:lessonId/quizzes/:quizId/questions
-    getByQuiz: (courseId, sectionId, lessonId, quizId) => 
+    getQuestions: (courseId, sectionId, lessonId, quizId) => 
         apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}/questions`),
 
-    getById: (courseId, sectionId, lessonId, quizId, questionId) => 
-        apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}/questions/${questionId}`),
-};
-
-// ============ ОТВЕТЫ НА ВОПРОСЫ ============
-export const answersAPI = {
-    // GET /courses/:courseId/sections/:sectionId/lessons/:lessonId/quizzes/:quizId/questions/:questionId/answers
-    getByQuestion: (courseId, sectionId, lessonId, quizId, questionId) => 
+    getAnswers: (courseId, sectionId, lessonId, quizId, questionId) => 
         apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}/questions/${questionId}/answers`),
 
-    getById: (courseId, sectionId, lessonId, quizId, questionId, answerId) => 
-        apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}/questions/${questionId}/answers/${answerId}`),
-
+    submitResults: (courseId, sectionId, lessonId, quizId, results) => 
+        apiRequest(`/courses/${courseId}/sections/${sectionId}/lessons/${lessonId}/quizzes/${quizId}/submit`, {
+            method: 'POST',
+            body: results
+        })
 };
 
 // ============ СОКРАЩАТЕЛЬ ССЫЛОК ============
 export const shortenerAPI = {
-    // GET /shorten/:short - обычно это редирект, но API может вернуть информацию
     getInfo: (short) => apiRequest(`/shorten/${short}`)
 };
 
