@@ -1,29 +1,137 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import NetworkBackground from '../components/NetworkBackground';
+import { authAPI, userAPI, handleApiError } from '../services/api';
 
 export default function EditProfilePage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "network_admin",
-    email: "admin@netlearn.ru",
-    fullName: "Алексей Петров",
-    bio: "Сетевой инженер с опытом работы с Cisco, Juniper",
+    username: "",
+    email: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: ""
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    if (!authAPI.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const currentUser = authAPI.getCurrentUser();
+      if (!currentUser) throw new Error('Пользователь не найден');
+
+      const user = await userAPI.getById(currentUser.id);
+
+      setFormData({
+        username: user.username || "",
+        email: user.email || "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      });
+
+    } catch (err) {
+      console.error('Ошибка загрузки данных:', err);
+      setError(handleApiError(err, 'Не удалось загрузить данные профиля'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    if (error) setError('');
+    if (success) setSuccess('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Сохранение профиля:', formData);
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const currentUser = authAPI.getCurrentUser();
+      if (!currentUser) throw new Error('Пользователь не найден');
+
+      const updateData = {};
+
+      if (formData.username !== currentUser.username) {
+        updateData.username = formData.username;
+      }
+      if (formData.email !== currentUser.email) {
+        updateData.email = formData.email;
+      }
+
+      if (formData.newPassword) {
+        if (formData.newPassword.length < 8) {
+          throw new Error('Новый пароль должен содержать минимум 8 символов');
+        }
+        if (formData.newPassword !== formData.confirmPassword) {
+          throw new Error('Новые пароли не совпадают');
+        }
+        if (!formData.currentPassword) {
+          throw new Error('Введите текущий пароль для смены пароля');
+        }
+        updateData.currentPassword = formData.currentPassword;
+        updateData.newPassword = formData.newPassword;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await userAPI.update(currentUser.id, updateData);
+
+        const updatedUserInLocalStorage = { ...currentUser, ...updateData };
+        delete updatedUserInLocalStorage.currentPassword;
+        delete updatedUserInLocalStorage.newPassword;
+        authAPI.saveAuthData(localStorage.getItem('authToken'), updatedUserInLocalStorage);
+        
+        setSuccess('Профиль успешно обновлен!');
+        setFormData(prev => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        }));
+      } else {
+        setSuccess('Нет изменений для сохранения.');
+      }
+
+
+    } catch (err) {
+      console.error('Ошибка сохранения профиля:', err);
+      setError(handleApiError(err, 'Не удалось сохранить изменения'));
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="text-emerald-500 font-mono text-xl mt-4">$ loading_edit-page...</div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <>
@@ -56,6 +164,22 @@ export default function EditProfilePage() {
               <span className="text-slate-500 font-mono text-sm">profile_editor</span>
             </div>
 
+            {error && (
+              <div className="mb-6 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                <div className="text-red-400 font-mono text-sm">
+                  {error}
+                </div>
+              </div>
+            )}
+
+            {success && (
+              <div className="mb-6 p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-lg">
+                <div className="text-emerald-400 font-mono text-sm">
+                  {success}
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-white mb-2 font-mono">Основная информация</h3>
@@ -72,6 +196,7 @@ export default function EditProfilePage() {
                       onChange={handleChange}
                       className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                       placeholder="Введите имя пользователя"
+                      required
                     />
                   </div>
 
@@ -86,36 +211,9 @@ export default function EditProfilePage() {
                       onChange={handleChange}
                       className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                       placeholder="user@example.com"
+                      required
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-emerald-500 font-mono text-sm mb-2">
-                    $ full_name:
-                  </label>
-                  <input 
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
-                    placeholder="Ваше полное имя"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-emerald-500 font-mono text-sm mb-2">
-                    $ bio:
-                  </label>
-                  <textarea 
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleChange}
-                    rows="3"
-                    className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors resize-none"
-                    placeholder="Расскажите о себе..."
-                  />
                 </div>
               </div>
 
@@ -172,16 +270,17 @@ export default function EditProfilePage() {
               <div className="flex gap-4 justify-end pt-6 border-t border-emerald-500/20">
                 <Link 
                   to="/profile" 
-                  className="px-6 py-5 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 text-sm"
+                  className="px-6 py-3 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 text-sm"
                 >
                   $ cancel.sh
                 </Link>
                 
                 <button 
                   type="submit"
-                  className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-sm"
+                  disabled={saving}
+                  className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  $ save_profile.sh
+                  {saving ? 'Сохранение...' : '$ save_profile.sh'}
                 </button>
               </div>
             </form>

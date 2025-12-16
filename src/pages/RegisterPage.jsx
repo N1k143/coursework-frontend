@@ -1,9 +1,92 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Header from '../components/Header';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import NetworkBackground from "../components/NetworkBackground";
+import { authAPI, handleApiError, sanitizeData } from '../services/api';
 
 export default function RegisterPage() {
+  const [formData, setFormData] =  useState({
+    email: '',          
+    username: '',         
+    password: '',       
+    confirmPassword: '' 
+  });
+  const [error, setError] = useState(''); 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    if(error) setError('');
+  }
+
+  const validateForm = () => {
+    if(!formData.email){
+      setError('Email обязателен для заполнения');
+      return false;
+    }
+    if (!formData.email.includes('@')) {
+      setError('Введите корректный email адрес');
+      return false;
+    }
+    if (formData.username.length < 3) {
+      setError('Username должен содержать минимум 3 символа');
+      return false;
+    }
+    if (formData.username.length > 20) {
+      setError('Username не должен превышать 20 символов');
+      return false;
+    }
+    if (formData.password.length < 8) {
+      setError('Пароль должен содержать минимум 8 символов');
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    if(!validateForm()){
+      setLoading(false);
+      return;
+    }
+
+    try{
+      const cleanData = sanitizeData({
+        email: formData.email,
+        password: formData.password,
+        username: formData.username
+      });
+      console.log('Отправка данных на сервер:', cleanData);
+      const result = await authAPI.register(cleanData);
+      console.log('Регистрация успешна:', result);
+      setSuccess('Регистрация прошла успешно! Перенаправляем на страницу входа...');
+        setTimeout(() => {
+        navigate('/login', {
+          state: { 
+            message: 'Регистрация прошла успешно! Теперь войдите в систему.',
+            email: formData.email 
+          }
+        });
+      }, 2000);
+    }catch (err) {
+      const errorMessage = handleApiError(err, 'Произошла ошибка при регистрации. Попробуйте еще раз.');
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6">
@@ -32,16 +115,35 @@ export default function RegisterPage() {
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-slate-500 ml-2 font-mono text-sm">register_terminal</span>
             </div>
-
-            <form className="space-y-4">
+            {success && (
+              <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
+                <div className="text-green-400 font-mono text-sm">
+                  {success}
+                </div>
+              </div>
+            )}
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                <div className="text-red-400 font-mono text-sm">
+                  Error: {error}
+                </div>
+              </div>
+            )}
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-emerald-500 font-mono text-sm mb-2">
                   $ email:
                 </label>
                 <input 
                   type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                   placeholder="user@example.com"
+                  required
+                  disabled={loading}
                 />
               </div>
 
@@ -50,9 +152,17 @@ export default function RegisterPage() {
                   $ username:
                 </label>
                 <input 
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
                   type="text"
                   className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                   placeholder="Введите ваш username"
+                  required
+                  disabled={loading}
+                  minLength="3" 
+                  maxLength="20"
                 />
               </div>
 
@@ -62,8 +172,15 @@ export default function RegisterPage() {
                 </label>
                 <input 
                   type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                   placeholder="Минимум 8 символов"
+                  required
+                  disabled={loading}
+                  minLength="8"
                 />
               </div>
 
@@ -73,16 +190,25 @@ export default function RegisterPage() {
                 </label>
                 <input 
                   type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                   placeholder="Повторите пароль"
+                  required
+                  disabled={loading}
+                  minLength="8"
                 />
               </div>
 
               <button 
                 type="submit"
+                disabled={loading}
+
                 className="w-full bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono py-3 text-sm mt-4"
               >
-                $ ./create_account.sh
+                {loading ? '$ Processing...' : '$ ./create_account.sh'}
               </button>
             </form>
 

@@ -1,5 +1,6 @@
 import React from "react";
 import NetworkBackground from "./NetworkBackground";
+import { Link } from "react-router-dom";
 
 export default function HeroSection({ scrollToAbout }){
     return(
@@ -43,9 +44,9 @@ export default function HeroSection({ scrollToAbout }){
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all cursor-pointer hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-sm sm:text-base">
+              <Link to="/courses" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all cursor-pointer hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-sm sm:text-base">
                 {'> НАЧАТЬ ОБУЧЕНИЕ'}
-              </button>
+              </Link>
               <button 
                 onClick={scrollToAbout}
                 className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-transparent text-emerald-500 rounded-lg font-bold border-2 border-emerald-500/50 hover:border-emerald-500 cursor-pointer hover:bg-emerald-500/10 transition-all font-mono text-sm sm:text-base">

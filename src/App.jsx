@@ -11,7 +11,6 @@ import CoursePlayerPage from './pages/CoursePlayerPage'
 import ProfilePage from './pages/ProfilePage'
 import EditProfilePage from './pages/EditProfilePage'
 import AboutPage from './pages/AboutPage'
-import AdminPanelPage from './pages/AdminPanelPage'
 
 function App() {
 
@@ -24,11 +23,10 @@ function App() {
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/course" element={<CoursePlayerPage />} />
+        <Route path="/course/:courseId" element={<CoursePlayerPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/editprofile" element={<EditProfilePage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/admin" element={<AdminPanelPage />} />
       </Routes>
       <Footer/>
     </div>
