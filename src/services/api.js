@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://46.101.144.175:3000/api';
 
 async function apiRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -19,8 +19,6 @@ async function apiRequest(endpoint, options = {}) {
         config.body = JSON.stringify(config.body);
     }
 
-    console.log(`API Request: ${config.method || 'GET'} ${url}`, config.body ? { body: config.body } : '');
-
     try {
         const response = await fetch(url, config);
 
@@ -36,11 +34,9 @@ async function apiRequest(endpoint, options = {}) {
             throw new Error(errorMessage);
         }
 
-        console.log(`API Response: ${url}`, data);
         return data;
 
     } catch (error) {
-        console.error(`API Error: ${url}`, error);
 
         let userMessage = error.message;
         
@@ -75,7 +71,7 @@ export const authAPI = {
     saveAuthData: (token, user) => {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userData', JSON.stringify(user));
-        console.log('Auth data saved:', { user });
+        console.log('Auth data saved');
     },
 
     logout: () => {
@@ -131,9 +127,8 @@ export const enrollmentsAPI = {
 
   getEnrolledCourseByUserId: (userId) => apiRequest(`/users/${userId}/enrollment`),
   
-  unenroll: (courseId, userId) => apiRequest(`/courses/${courseId}/enrollments`, {
-    method: 'DELETE',
-    body: { userId }
+  unenroll: (courseId, enrollmentId) => apiRequest(`/courses/${courseId}/enrollments/${enrollmentId}`, {
+    method: 'DELETE'
   })
 };
 

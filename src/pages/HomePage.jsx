@@ -22,14 +22,12 @@ export default function HomePage() {
       <HeroSection scrollToAbout={scrollToAbout} />
       <FeaturesSection sectionRef={aboutSectionRef} />
 
-      {/* 🎯 УМНЫЙ СЕКЦИЯ CTA */}
       <section className="py-20 px-6 bg-gradient-to-br from-emerald-600 to-cyan-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]"></div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           
           {isAuthenticated ? (
-            // 👤 ДЛЯ АВТОРИЗОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ
             <>
               <h2 className="text-4xl font-bold text-white mb-6 font-mono">
                 {'> WELCOME BACK, ' + (currentUser?.username || 'USER') + '!'}
@@ -47,7 +45,6 @@ export default function HomePage() {
               </div>
             </>
           ) : (
-            // 🔐 ДЛЯ НЕАВТОРИЗОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ
             <>
               <h2 className="text-4xl font-bold text-white mb-6 font-mono">
                 {'> READY TO CONNECT?'}

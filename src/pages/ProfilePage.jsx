@@ -405,9 +405,6 @@ export default function ProfilePage() {
                         <div key={course.id} className="flex justify-between items-center bg-slate-800 border border-slate-600 rounded-lg p-4">
                           <div>
                             <h4 className="text-white font-medium">{course.title}</h4>
-                            <p className="text-slate-400 text-sm">
-                              Прогресс: {course.progress || 100}%
-                            </p>
                           </div>
                           <div className="text-right">
                             <div className="text-emerald-500 font-mono text-lg">
