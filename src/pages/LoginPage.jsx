@@ -55,19 +55,13 @@ export default function LoginPage() {
         email: formData.email,
         password: formData.password
       });
-
-      console.log('Отправка данных для входа:', cleanData);
-
       const result = await authAPI.login(cleanData);
-      console.log('Вход выполнен успешно:', result);
       
       if (result.token && result.user) {
-        authAPI.saveAuthData(result.token, result.user);
-        
+        authAPI.saveAuthData(result.token, result.user);  
 
         const from = location.state?.from || '/courses';
         
-        console.log('Пользователь авторизован, перенаправляем:', from);
         navigate(from, { replace: true });
         
       } else {

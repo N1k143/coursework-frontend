@@ -138,7 +138,6 @@ export default function CoursesPage() {
     const user = authAPI.getCurrentUser();
     if (!user) {
       addToast('Пожалуйста, войдите в систему, чтобы записаться на курс.', 'error');
-      navigate('/login');
       return;
     }
 

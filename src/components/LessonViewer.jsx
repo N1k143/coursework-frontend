@@ -68,20 +68,20 @@ export default function LessonViewer({
   }
 
   return (
-    <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-        <span className="text-slate-500 font-mono text-sm">
+    <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-3 sm:p-6">
+      <div className="flex items-center gap-2 mb-4 sm:mb-6">
+        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+        <span className="text-slate-500 font-mono text-xs sm:text-sm">
           lesson_viewer
         </span>
       </div>
 
-      <div className="markdown-content min-h-[400px] mb-6">
+      <div className="markdown-content min-h-[300px] sm:min-h-[400px] mb-4 sm:mb-6">
         {currentLesson.contentType === 'text' && currentLesson.textContent ? (
-          <div className="prose prose-invert max-w-none">
-            <Suspense fallback={<div className="text-slate-400">Загрузка контента...</div>}>
+          <div className="prose prose-invert prose-sm sm:prose-base max-w-none">
+            <Suspense fallback={<div className="text-slate-400 text-sm sm:text-base">Загрузка контента...</div>}>
               <MarkdownRenderer>
                 {currentLesson.textContent}
               </MarkdownRenderer>
@@ -96,8 +96,8 @@ export default function LessonViewer({
             />
           </div>
         ) : (
-          <div className="text-center py-20">
-            <div className="text-slate-400 font-mono text-lg mb-4">
+          <div className="text-center py-12 sm:py-20">
+            <div className="text-slate-400 font-mono text-base sm:text-lg mb-4">
               // Контент урока не найден
             </div>
             <div className="text-slate-500 font-mono text-sm">
@@ -108,10 +108,10 @@ export default function LessonViewer({
       </div>
 
       {!checkingQuiz && hasQuiz && (
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <button
             onClick={handleOpenTest}
-            className="w-full px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2"
+            className="w-full px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-sm sm:text-base hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2"
           >
             <span className="font-bold">Пройти тест по уроку</span>
           </button>
@@ -121,10 +121,10 @@ export default function LessonViewer({
         </div>
       )}
 
-      <div className="flex justify-between mt-8 pt-6 border-t border-emerald-500/20">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-emerald-500/20">
         <button
           onClick={() => onNavigate('prev')}
-          className="px-6 py-3 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-sm sm:text-base hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           ← Предыдущий
         </button>
@@ -132,7 +132,7 @@ export default function LessonViewer({
         <button
           onClick={handleMarkComplete}
           disabled={isMarkingComplete}
-          className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-sm sm:text-base hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-first sm:order-none"
         >
           {isMarkingComplete ? (
             <>
@@ -146,7 +146,7 @@ export default function LessonViewer({
 
         <button
           onClick={() => onNavigate('next')}
-          className="px-6 py-3 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-sm sm:text-base hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           Следующий →
         </button>

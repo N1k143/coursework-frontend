@@ -22,10 +22,24 @@ async function apiRequest(endpoint, options = {}) {
     try {
         const response = await fetch(url, config);
 
+        const contentType = response.headers.get('content-type');
+
+        if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+            if (response.ok) {
+                return { success: true };
+            } else {
+                const text = await response.text();
+                throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
+            }
+        }
+
         let data;
         try {
             data = await response.json();
         } catch (e) {
+            if (response.ok) {
+                return { success: true };
+            }
             throw new Error(`Invalid JSON response from server: ${response.status} ${response.statusText}`);
         }
 
@@ -37,7 +51,6 @@ async function apiRequest(endpoint, options = {}) {
         return data;
 
     } catch (error) {
-
         let userMessage = error.message;
         
         if (error.message.includes('Failed to fetch') || 
@@ -48,7 +61,7 @@ async function apiRequest(endpoint, options = {}) {
         else if (error.message.includes('timeout')) {
             userMessage = 'Сервер не отвечает. Попробуйте позже.';
         }
-        else if (error.message.includes('Invalid JSON')) {
+        else if (error.message.includes('Invalid JSON') || error.message.includes('HTTP Error')) {
             userMessage = 'Некорректный ответ сервера.';
         }
 
@@ -71,13 +84,11 @@ export const authAPI = {
     saveAuthData: (token, user) => {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userData', JSON.stringify(user));
-        console.log('Auth data saved');
     },
 
     logout: () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
-        console.log('User logged out');
     },
 
     getCurrentUser: () => {
@@ -235,7 +246,6 @@ export const sanitizeData = (data) => {
     return cleaned;
 };
 
-// Хелпер для построения URL с параметрами
 export const buildUrl = (baseUrl, params = {}) => {
     const url = new URL(baseUrl, window.location.origin);
     Object.keys(params).forEach(key => {
@@ -246,7 +256,6 @@ export const buildUrl = (baseUrl, params = {}) => {
     return url.pathname + url.search;
 };
 
-// Получение заголовков авторизации
 export const getAuthHeaders = () => {
     const token = localStorage.getItem('authToken');
     return {

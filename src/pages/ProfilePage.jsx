@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NetworkBackground from '../components/NetworkBackground';
-import { authAPI, userAPI, coursesAPI, progressAPI, handleApiError } from '../services/api';
+import { authAPI, userAPI, coursesAPI, progressAPI, enrollmentsAPI, handleApiError } from '../services/api';
 import { Camera } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -13,6 +13,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [avatarLoading, setAvatarLoading] = useState(false);
+  const [unenrollingCourseId, setUnenrollingCourseId] = useState(null);
 
   useEffect(() => {
     loadProfileData();
@@ -175,6 +176,29 @@ export default function ProfilePage() {
   const handleLogout = () => {
     authAPI.logout();
     navigate('/login');
+  };
+
+  const handleUnenroll = async (courseId) => {
+    setUnenrollingCourseId(courseId);
+    setError('');
+
+    try {
+      const currentUser = authAPI.getCurrentUser();
+      if (!currentUser) throw new Error('Пользователь не найден');
+
+      const enrollment = currentUser.enrollments?.find(e => e.courseId === courseId);
+      if (!enrollment) throw new Error('Запись на курс не найдена');
+
+      await enrollmentsAPI.unenroll(courseId, enrollment.id);
+
+      await loadProfileData();
+      
+    } catch (err) {
+      console.error('Ошибка отписки от курса:', err);
+      setError(handleApiError(err, 'Не удалось отписаться от курса'));
+    } finally {
+      setUnenrollingCourseId(null);
+    }
   };
 
   const refreshProfile = () => {
@@ -365,12 +389,40 @@ export default function ProfilePage() {
                               style={{ width: `${course.progress || 0}%` }}
                             ></div>
                           </div>
-                          <Link 
-                            to={`/course/${course.id}`}
-                            className="inline-block w-full px-4 py-2 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-sm hover:bg-emerald-400 transition-all text-center"
-                          >
-                            $ continue.sh
-                          </Link>
+                          <div className="flex gap-2">
+                            <Link 
+                              to={`/course/${course.id}`}
+                              className="flex-1 px-4 py-2 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-sm hover:bg-emerald-400 transition-all text-center flex items-center justify-center gap-2"
+                            >
+                              {course.status === 'completed' ? (
+                                <>
+                                  <span className="w-2 h-2 bg-slate-950 rounded-full"></span>
+                                  {'> '}review_course.sh
+                                </>
+                              ) : course.status === 'in_progress' ? (
+                                <>
+                                  <span className="w-2 h-2 bg-slate-950 rounded-full animate-pulse"></span>
+                                  {'> '}continue.sh
+                                </>
+                              ) : (
+                                <>
+                                  <span className="w-2 h-2 bg-slate-950 rounded-full"></span>
+                                  {'> '}start.sh
+                                </>
+                              )}
+                            </Link>
+                            <button
+                              onClick={() => handleUnenroll(course.id)}
+                              disabled={unenrollingCourseId === course.id}
+                              className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg font-mono text-sm hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {unenrollingCourseId === course.id ? (
+                                <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
+                              ) : (
+                                '$ unenroll.sh'
+                              )}
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
