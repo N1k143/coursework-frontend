@@ -135,58 +135,58 @@ export default function EditProfilePage() {
 
   return (
     <>
-      <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden">
+      <main className="min-h-screen bg-slate-950 pt-24 sm:pt-32 pb-20 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <NetworkBackground/>
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
 
         <div className="max-w-3xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              <span className="text-emerald-500 font-mono">$ edit</span>
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <span className="text-emerald-500 font-mono text-xl sm:text-3xl lg:text-4xl">$ edit</span>
               <br/>
               <span className="font-sans bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
                 Редактирование профиля
               </span>
             </h1>
 
-            <p className="text-slate-400 font-mono text-sm max-w-2xl mx-auto">
+            <p className="text-slate-400 font-mono text-xs sm:text-sm max-w-2xl mx-auto px-4">
               Измените данные вашего профиля
             </p>
           </div>
 
-          <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-8">
-            <div className="flex items-center gap-2 mb-8">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-slate-500 font-mono text-sm">profile_editor</span>
+          <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 sm:p-6 lg:p-8">
+            <div className="flex items-center gap-2 mb-6 sm:mb-8">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+              <span className="text-slate-500 font-mono text-xs sm:text-sm">profile_editor</span>
             </div>
 
             {error && (
-              <div className="mb-6 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
-                <div className="text-red-400 font-mono text-sm">
+              <div className="mb-4 sm:mb-6 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                <div className="text-red-400 font-mono text-xs sm:text-sm break-words">
                   {error}
                 </div>
               </div>
             )}
 
             {success && (
-              <div className="mb-6 p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-lg">
-                <div className="text-emerald-400 font-mono text-sm">
+              <div className="mb-4 sm:mb-6 p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-lg">
+                <div className="text-emerald-400 font-mono text-xs sm:text-sm break-words">
                   {success}
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-white mb-2 font-mono">Основная информация</h3>
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+              <div className="space-y-4 sm:space-y-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2 font-mono">Основная информация</h3>
                 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-emerald-500 font-mono text-sm mb-2">
+                    <label className="block text-emerald-500 font-mono text-xs sm:text-sm mb-2">
                       $ username:
                     </label>
                     <input 
@@ -194,14 +194,14 @@ export default function EditProfilePage() {
                       name="username"
                       value={formData.username}
                       onChange={handleChange}
-                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
+                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                       placeholder="Введите имя пользователя"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-emerald-500 font-mono text-sm mb-2">
+                    <label className="block text-emerald-500 font-mono text-xs sm:text-sm mb-2">
                       $ email:
                     </label>
                     <input 
@@ -209,7 +209,7 @@ export default function EditProfilePage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
+                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                       placeholder="user@example.com"
                       required
                     />
@@ -217,12 +217,12 @@ export default function EditProfilePage() {
                 </div>
               </div>
 
-              <div className="border-t border-emerald-500/20 pt-8">
-                <h3 className="text-xl font-bold text-white mb-6 font-mono">Смена пароля</h3>
+              <div className="border-t border-emerald-500/20 pt-6 sm:pt-8">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">Смена пароля</h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-emerald-500 font-mono text-sm mb-2">
+                    <label className="block text-emerald-500 font-mono text-xs sm:text-sm mb-2">
                       $ current_password:
                     </label>
                     <input 
@@ -230,14 +230,14 @@ export default function EditProfilePage() {
                       name="currentPassword"
                       value={formData.currentPassword}
                       onChange={handleChange}
-                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
+                      className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                       placeholder="Текущий пароль"
                     />
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-emerald-500 font-mono text-sm mb-2">
+                      <label className="block text-emerald-500 font-mono text-xs sm:text-sm mb-2">
                         $ new_password:
                       </label>
                       <input 
@@ -245,13 +245,13 @@ export default function EditProfilePage() {
                         name="newPassword"
                         value={formData.newPassword}
                         onChange={handleChange}
-                        className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
+                        className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                         placeholder="Новый пароль"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-emerald-500 font-mono text-sm mb-2">
+                      <label className="block text-emerald-500 font-mono text-xs sm:text-sm mb-2">
                         $ confirm_password:
                       </label>
                       <input 
@@ -259,7 +259,7 @@ export default function EditProfilePage() {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-4 py-3 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none transition-colors"
+                        className="w-full bg-slate-800 border border-emerald-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white font-mono text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition-colors"
                         placeholder="Подтвердите пароль"
                       />
                     </div>
@@ -267,10 +267,10 @@ export default function EditProfilePage() {
                 </div>
               </div>
 
-              <div className="flex gap-4 justify-end pt-6 border-t border-emerald-500/20">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 justify-end pt-4 sm:pt-6 border-t border-emerald-500/20">
                 <Link 
                   to="/profile" 
-                  className="px-6 py-3 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 text-sm"
+                  className="w-full sm:w-auto text-center px-4 sm:px-6 py-2.5 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 text-xs sm:text-sm"
                 >
                   $ cancel.sh
                 </Link>
@@ -278,7 +278,7 @@ export default function EditProfilePage() {
                 <button 
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Сохранение...' : '$ save_profile.sh'}
                 </button>

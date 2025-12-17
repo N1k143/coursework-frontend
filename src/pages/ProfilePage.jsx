@@ -241,9 +241,9 @@ export default function ProfilePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-12">            
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              <span className="text-emerald-500 font-mono">$ whoami</span>
+          <div className="text-center mb-8 md:mb-12">            
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <span className="text-emerald-500 font-mono text-xl sm:text-3xl lg:text-4xl">$ whoami</span>
               <br/>
               <span className="font-sans bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
                 Профиль пользователя
@@ -252,7 +252,7 @@ export default function ProfilePage() {
             
             {error && (
               <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg max-w-md mx-auto">
-                <div className="text-yellow-400 font-mono text-sm">
+                <div className="text-yellow-400 font-mono text-xs sm:text-sm break-words">
                   <span className="text-yellow-500">⚠</span> {error}
                 </div>
               </div>
@@ -266,9 +266,9 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
             <div className="lg:col-span-1">
-              <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-6 sticky top-32">
+              <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 sm:p-6 lg:sticky lg:top-32">
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -277,8 +277,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="text-center mb-6">
-                  <div className="relative group mx-auto mb-4 w-20 h-20">
-                    <div className="w-20 h-20 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="relative group mx-auto mb-4 w-16 h-16 sm:w-20 sm:h-20">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center overflow-hidden">
                       {userData?.avatarUrl ? (
                         <img 
                           src={userData.avatarUrl} 
@@ -286,7 +286,7 @@ export default function ProfilePage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-2xl text-emerald-500 font-mono">
+                        <span className="text-xl sm:text-2xl text-emerald-500 font-mono">
                           {userData?.username?.charAt(0).toUpperCase() || 'U'}
                         </span>
                       )}
@@ -313,8 +313,8 @@ export default function ProfilePage() {
                     />
                   </div>
 
-                  <h2 className="text-xl font-bold text-white font-mono">{userData?.username}</h2>
-                  <p className="text-slate-400 text-sm mt-1">{userData?.email}</p>
+                  <h2 className="text-lg sm:text-xl font-bold text-white font-mono break-words">{userData?.username}</h2>
+                  <p className="text-slate-400 text-xs sm:text-sm mt-1 break-all">{userData?.email}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -360,8 +360,8 @@ export default function ProfilePage() {
             </div>
 
             <div className="lg:col-span-2">
-              <div className="space-y-8">
-                <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-6">
+              <div className="space-y-6 lg:space-y-8">
+                <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
@@ -369,17 +369,17 @@ export default function ProfilePage() {
                     <span className="text-slate-500 font-mono text-sm">active_courses</span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white mb-4 font-mono">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 font-mono">
                     Активные курсы ({currentCourses.length})
                   </h3>
                   
                   {currentCourses.length > 0 ? (
                     <div className="space-y-4">
                       {currentCourses.map(course => (
-                        <div key={course.id} className="bg-slate-800 border border-slate-600 rounded-lg p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <h4 className="text-white font-medium">{course.title}</h4>
-                            <span className="text-slate-400 text-sm">
+                        <div key={course.id} className="bg-slate-800 border border-slate-600 rounded-lg p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
+                            <h4 className="text-white font-medium text-sm sm:text-base break-words">{course.title}</h4>
+                            <span className="text-slate-400 text-xs sm:text-sm whitespace-nowrap">
                               Прогресс: {course.progress || 0}%
                             </span>
                           </div>
@@ -389,10 +389,10 @@ export default function ProfilePage() {
                               style={{ width: `${course.progress || 0}%` }}
                             ></div>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <Link 
                               to={`/course/${course.id}`}
-                              className="flex-1 px-4 py-2 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-sm hover:bg-emerald-400 transition-all text-center flex items-center justify-center gap-2"
+                              className="flex-1 px-3 sm:px-4 py-2 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all text-center flex items-center justify-center gap-2"
                             >
                               {course.status === 'completed' ? (
                                 <>
@@ -414,7 +414,7 @@ export default function ProfilePage() {
                             <button
                               onClick={() => handleUnenroll(course.id)}
                               disabled={unenrollingCourseId === course.id}
-                              className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg font-mono text-sm hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="px-3 sm:px-4 py-2 bg-red-500/20 text-red-400 rounded-lg font-mono text-xs sm:text-sm hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {unenrollingCourseId === course.id ? (
                                 <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
@@ -428,10 +428,10 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="text-slate-400 font-mono mb-4">Нет активных курсов</div>
+                      <div className="text-slate-400 font-mono mb-4 text-sm sm:text-base">Нет активных курсов</div>
                       <Link 
                         to="/courses"
-                        className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold hover:bg-emerald-400 transition-all"
+                        className="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-emerald-500 text-slate-950 rounded-lg font-mono font-bold text-sm sm:text-base hover:bg-emerald-400 transition-all"
                       >
                         $ browse_courses.sh
                       </Link>
@@ -439,7 +439,7 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-6">
+                <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
@@ -447,19 +447,19 @@ export default function ProfilePage() {
                     <span className="text-slate-500 font-mono text-sm">completed_courses</span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white mb-4 font-mono">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 font-mono">
                     Завершенные курсы ({completedCourses.length})
                   </h3>
                   
                   {completedCourses.length > 0 ? (
                     <div className="space-y-3">
                       {completedCourses.map(course => (
-                        <div key={course.id} className="flex justify-between items-center bg-slate-800 border border-slate-600 rounded-lg p-4">
+                        <div key={course.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-slate-800 border border-slate-600 rounded-lg p-3 sm:p-4">
                           <div>
-                            <h4 className="text-white font-medium">{course.title}</h4>
+                            <h4 className="text-white font-medium text-sm sm:text-base break-words">{course.title}</h4>
                           </div>
-                          <div className="text-right">
-                            <div className="text-emerald-500 font-mono text-lg">
+                          <div className="text-left sm:text-right">
+                            <div className="text-emerald-500 font-mono text-base sm:text-lg">
                               {course.progress || 100}%
                             </div>
                             <div className="text-slate-400 text-xs">Результат</div>
@@ -469,7 +469,7 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="text-slate-400 font-mono">Пока нет завершенных курсов</div>
+                      <div className="text-slate-400 font-mono text-sm sm:text-base">Пока нет завершенных курсов</div>
                     </div>
                   )}
                 </div>

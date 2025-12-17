@@ -214,7 +214,7 @@ export default function CoursePlayerPage() {
   return (
     <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-4 lg:px-6 relative overflow-hidden">
       <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
+        <NetworkBackground/>
       </div>
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
 

@@ -450,22 +450,22 @@ export default function CoursesPage() {
               )}
 
               <div className="mt-16 text-center">
-                <div className="inline-grid grid-cols-4 gap-4 sm:gap-8 bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 font-mono text-sm">
-                  <div>
-                    <div className="text-2xl font-bold text-emerald-500">{stats.total}</div>
-                    <div className="text-slate-400">TOTAL</div>
+                <div className="inline-grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 bg-slate-900 border border-emerald-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 font-mono text-xs sm:text-sm w-full max-w-4xl">
+                  <div className="p-2 sm:p-0">
+                    <div className="text-xl sm:text-2xl font-bold text-emerald-500">{stats.total}</div>
+                    <div className="text-slate-400 text-[10px] sm:text-sm">TOTAL</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-green-500">{stats.completed}</div>
-                    <div className="text-slate-400">PASSED</div>
+                  <div className="p-2 sm:p-0">
+                    <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.completed}</div>
+                    <div className="text-slate-400 text-[10px] sm:text-sm">PASSED</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-cyan-500">{stats.inProgress}</div>
-                    <div className="text-slate-400">IN PROGRESS</div>
+                  <div className="p-2 sm:p-0">
+                    <div className="text-xl sm:text-2xl font-bold text-cyan-500">{stats.inProgress}</div>
+                    <div className="text-slate-400 text-[10px] sm:text-sm">IN PROGRESS</div>
                   </div>
-                  <div>
-                    <div className="text-2xl font-bold text-blue-500">{stats.enrolled}</div>
-                    <div className="text-slate-400">ENROLLED</div>
+                  <div className="p-2 sm:p-0">
+                    <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.enrolled}</div>
+                    <div className="text-slate-400 text-[10px] sm:text-sm">ENROLLED</div>
                   </div>
                 </div>
               </div>
