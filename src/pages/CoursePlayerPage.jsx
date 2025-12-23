@@ -1,4 +1,3 @@
-// CoursePlayerPage.js - упрощаем
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import 'highlight.js/styles/vs2015.css';
@@ -111,7 +110,7 @@ export default function CoursePlayerPage() {
 
     setCurrentSectionId(sectionId);
     setCurrentLesson(lesson);
-    setShowQuizView(false); // Сбрасываем показ теста при выборе нового урока
+    setShowQuizView(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -202,23 +201,23 @@ export default function CoursePlayerPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden flex items-center justify-center">
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center overflow-x-hidden">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <div className="text-emerald-500 font-mono text-xl mt-4">$ loading_course...</div>
+          <div className="text-emerald-500 font-mono text-lg mt-4">$ loading_course...</div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-4 lg:px-6 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
+    <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-4 lg:px-6 relative overflow-x-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <NetworkBackground/>
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 w-full overflow-x-hidden">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-slate-400 font-mono mb-4">
             <Link to="/courses" className="hover:text-emerald-400 transition-colors">
@@ -228,13 +227,13 @@ export default function CoursePlayerPage() {
             <span className="text-emerald-400">{course?.title || 'Курс'}</span>
           </div>
 
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2">
+          <h1 className="text-3xl lg:text-5xl font-bold text-white mb-2 break-words">
             <span className="text-emerald-500 font-mono">$ less </span>
             <span className="font-sans bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
               {course?.title}
             </span>
           </h1>
-          <p className="text-slate-400 font-mono text-sm max-w-3xl">{course?.description}</p>
+          <p className="text-slate-400 font-mono text-sm max-w-3xl break-words">{course?.description}</p>
 
           {courseProgress && (
             <div className="mt-4 flex items-center gap-2">
@@ -258,17 +257,21 @@ export default function CoursePlayerPage() {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-4 gap-6 lg:gap-8">
-          <CourseNavigation
-            course={course}
-            sections={sections || []}
-            lessonsBySection={lessonsBySection || {}}
-            currentLessonId={currentLesson?.id}
-            onLessonSelect={handleLessonSelect}
-            courseProgress={courseProgress || { status: 'not_started' }}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
+          
+          <div className="lg:col-span-1 sticky top-24 self-start">
+            <CourseNavigation
+              course={course}
+              sections={sections || []}
+              lessonsBySection={lessonsBySection || {}}
+              currentLessonId={currentLesson?.id}
+              onLessonSelect={handleLessonSelect}
+              courseProgress={courseProgress || { status: 'not_started' }}
+            />
+          </div>
 
-          <div className="lg:col-span-3">
+
+          <div className="lg:col-span-3 w-full overflow-x-hidden">
             {showQuizView ? (
               <QuizComponent
                 courseId={courseId}
@@ -284,7 +287,7 @@ export default function CoursePlayerPage() {
                 currentLesson={currentLesson || {}}
                 onMarkComplete={handleMarkComplete}
                 onNavigate={handleNavigate}
-                onOpenTest={handleOpenTest} // Передаем функцию открытия теста
+                onOpenTest={handleOpenTest}
               />
             )}
           </div>

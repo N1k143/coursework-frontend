@@ -1,50 +1,31 @@
 import React from 'react';
+import { Network, ShieldCheck, Code2 } from 'lucide-react';
 
 export default function FeaturesSection({ sectionRef }) {
   const features = [
     {
-      icon: "Иконка",
-      title: "Virtual Labs",
-      desc: "Cisco, Juniper, MikroTik эмуляторы для реальной практики",
-      tech: "GNS3 | EVE-NG",
+      icon: <Network className="w-8 h-8 text-cyan-500" />,
+      title: "Основы OSI",
+      desc: "Изучение модели OSI, принципов работы сетей, TCP/IP, маршрутизации и коммутации",
+      tech: "Cisco Packet Tracer | GNS3 ",
       status: "active"
     },
     {
-      icon: "Иконка",
-      title: "Protocol Analysis",
-      desc: "Изучение работы TCP/IP, OSPF, BGP, MPLS на практике",
-      tech: "Wireshark | tcpdump",
+      icon: <Code2 className="w-8 h-8 text-emerald-500" />,
+      title: "Основы Python",
+      desc: "Базовый синтаксис Python, работа с переменными, условиями, циклами и автоматизация сетевых задач",
+      tech: "Python | VS Code | Netmiko",
       status: "active"
     },
     {
-      icon: "Иконка",
-      title: "Network Security",
-      desc: "Настройка firewall, VPN, IDS/IPS систем",
-      tech: "pfSense | Snort",
+      icon: <ShieldCheck className="w-8 h-8 text-red-500" />,
+      title: "Начальная кибербезопасность",
+      desc: "Основы информационной безопасности, защита сетей, настройка firewall, VPN и анализ угроз",
+      tech: "pfSense | Wireshark | Snort",
       status: "active"
-    },
-    {
-      icon: "Иконка",
-      title: "Automation",
-      desc: "Автоматизация сетевых задач через Python, Ansible",
-      tech: "Python | Ansible",
-      status: "beta"
-    },
-    {
-      icon: "Иконка",
-      title: "Monitoring",
-      desc: "Системы мониторинга и анализа сетевого трафика",
-      tech: "Zabbix | Grafana",
-      status: "active"
-    },
-    {
-      icon: "Иконка",
-      title: "Cloud Networks",
-      desc: "Проектирование сетей в AWS, Azure, Google Cloud",
-      tech: "AWS VPC | Azure",
-      status: "beta"
     }
   ];
+
 
   return (
     <section ref={sectionRef} className="py-20 px-6 bg-slate-900 relative">

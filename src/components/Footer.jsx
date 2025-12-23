@@ -13,17 +13,18 @@ export default function Footer() {
               <span className="text-2xl font-bold font-mono">NetLearn</span>
             </div>
             <p className="text-slate-300 leading-relaxed max-w-md font-mono text-sm">
-              Современная платформа для изучения сетевых технологий. 
-              Практические курсы, симуляторы и тесты для эффективного обучения.
+              Образовательная платформа с курсами и тестами по сетевым технологиям, 
+              программированию и кибербезопасности для системного и последовательного обучения.
             </p>
+
             <div className="flex space-x-4 mt-6">
-              <a href="#" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
+              <a href="https://www.instagram.com/nikita_petrunin3?igsh=ZWdwY2dzMmhiN3Ez" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/1200px-Instagram_logo_2022.svg.png" className="w-5 h-5"/>
               </a>
-              <a href="#" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
+              <a href="https://www.x.com/__motya" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
                 <img src="https://img.icons8.com/?size=1200&id=yoQabS8l0qpr&format=png" className="w-5 h-5"/>
               </a>
-              <a href="#" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
+              <a href="https://web.telegram.org/" className="w-10 h-10 bg-slate-700 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-colors">
                 <img src="https://cdn.worldvectorlogo.com/logos/telegram.svg" className="w-5 h-5"/>
               </a>
             </div>
@@ -88,7 +89,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-400 text-sm font-mono">
-            © 2025 РастХерня | Status: <span className="text-emerald-500">Online</span>
+            © 2025 NetLearn | Status: <span className="text-emerald-500">Online</span>
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">

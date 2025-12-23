@@ -75,11 +75,11 @@ export default function LessonViewer({
 
   if (!currentLesson || !currentLesson.id) {
     return (
-      <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-3 sm:p-4 md:p-6 lg:p-8 text-center">
-        <div className="text-slate-400 font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-2 sm:mb-4">
+      <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 lg:p-8 text-center">
+        <div className="text-slate-400 font-mono text-xs xs:text-sm sm:text-base md:text-lg mb-2 xs:mb-3 sm:mb-4">
           // Урок не найден
         </div>
-        <div className="text-slate-500 font-mono text-[10px] sm:text-xs md:text-sm">
+        <div className="text-slate-500 font-mono text-[10px] xs:text-xs sm:text-sm">
           Выберите урок из списка слева
         </div>
       </div>
@@ -87,21 +87,21 @@ export default function LessonViewer({
   }
 
   return (
-    <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 sm:p-6 w-full overflow-hidden">
-      <div className="flex items-center gap-2 mb-4 sm:mb-6">
-        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
-        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
-        <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
-        <span className="text-slate-500 font-mono text-xs sm:text-sm">
+    <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 w-full overflow-hidden">
+      <div className="flex items-center gap-1.5 xs:gap-2 mb-3 xs:mb-4 sm:mb-5 md:mb-6">
+        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+        <span className="text-slate-500 font-mono text-[10px] xs:text-xs sm:text-sm">
           lesson_viewer
         </span>
       </div>
 
-      <div className="markdown-content min-h-[300px] sm:min-h-[400px] mb-6 w-full overflow-hidden">
+      <div className="markdown-content min-h-[250px] xs:min-h-[300px] sm:min-h-[350px] md:min-h-[400px] mb-4 xs:mb-5 sm:mb-6 w-full overflow-hidden">
         {currentLesson.contentType === 'text' && currentLesson.textContent ? (
           <div className="prose prose-invert prose-sm max-w-none w-full overflow-hidden">
             <Suspense fallback={
-              <div className="text-slate-400 text-sm">
+              <div className="text-slate-400 text-xs xs:text-sm">
                 Загрузка контента...
               </div>
             }>
@@ -143,11 +143,11 @@ export default function LessonViewer({
             </div>
           </div>
         ) : (
-          <div className="text-center py-6 sm:py-8 md:py-12 lg:py-20">
-            <div className="text-slate-400 font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4">
+          <div className="text-center py-6 xs:py-8 sm:py-10 md:py-12 lg:py-20">
+            <div className="text-slate-400 font-mono text-xs xs:text-sm sm:text-base md:text-lg mb-2 xs:mb-3 sm:mb-4">
               // Контент урока не найден
             </div>
-            <div className="text-slate-500 font-mono text-[10px] sm:text-xs md:text-sm">
+            <div className="text-slate-500 font-mono text-[10px] xs:text-xs sm:text-sm">
               Обратитесь к администратору курса
             </div>
           </div>
@@ -155,30 +155,30 @@ export default function LessonViewer({
       </div>
 
       {!checkingQuiz && hasQuiz && (
-        <div className="mb-6">
+        <div className="mb-4 xs:mb-5 sm:mb-6">
           <button
             onClick={handleOpenTest}
-            className="w-full px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-sm hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2 relative overflow-hidden group/btn"
+            className="w-full px-3 py-2 xs:px-4 xs:py-2.5 sm:px-5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-xs xs:text-sm hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-1.5 xs:gap-2 relative overflow-hidden group/btn"
           >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <span className="w-2 h-2 bg-slate-950 rounded-full animate-pulse"></span>
+            <span className="relative z-10 flex items-center justify-center gap-1.5 xs:gap-2">
+              <span className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-slate-950 rounded-full animate-pulse"></span>
               {'> '}start_test.sh
             </span>
             <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-emerald-500 to-emerald-300"></div>
           </button>
-          <div className="text-center text-slate-500 text-xs font-mono mt-2">
+          <div className="text-center text-slate-500 text-[10px] xs:text-xs font-mono mt-1.5 xs:mt-2">
             // Complete the test to finish the lesson
           </div>
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6 sm:mt-8 pt-6 border-t border-emerald-500/20">
+      <div className="flex flex-col sm:flex-row justify-between gap-2 xs:gap-2.5 sm:gap-3 mt-4 xs:mt-5 sm:mt-6 md:mt-8 pt-4 xs:pt-5 sm:pt-6 border-t border-emerald-500/20">
         <button
           onClick={() => onNavigate('prev')}
-          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-sm hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/btn"
+          className="px-3 py-2 xs:px-4 xs:py-2.5 sm:px-5 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-xs xs:text-sm hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/btn"
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            <span className="w-2 h-2 bg-slate-300 rounded-full"></span>
+          <span className="relative z-10 flex items-center justify-center gap-1.5 xs:gap-2">
+            <span className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-slate-300 rounded-full"></span>
             {'> '}prev_lesson.sh
           </span>
           <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-slate-700"></div>
@@ -187,17 +187,17 @@ export default function LessonViewer({
         <button
           onClick={handleMarkComplete}
           disabled={isMarkingComplete}
-          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-sm hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed order-first sm:order-none relative overflow-hidden group/btn"
+          className="px-3 py-2 xs:px-4 xs:py-2.5 sm:px-5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 rounded-lg font-mono text-xs xs:text-sm hover:from-emerald-500 hover:to-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed order-first sm:order-none relative overflow-hidden group/btn"
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
+          <span className="relative z-10 flex items-center justify-center gap-1.5 xs:gap-2">
             {isMarkingComplete ? (
               <>
-                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-3 h-3 xs:w-4 xs:h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
                 processing...
               </>
             ) : (
               <>
-                <span className="w-2 h-2 bg-slate-950 rounded-full animate-pulse"></span>
+                <span className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-slate-950 rounded-full animate-pulse"></span>
                 {'> '}complete_lesson.sh
               </>
             )}
@@ -207,10 +207,10 @@ export default function LessonViewer({
 
         <button
           onClick={() => onNavigate('next')}
-          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-sm hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/btn"
+          className="px-3 py-2 xs:px-4 xs:py-2.5 sm:px-5 sm:py-3 bg-slate-800 text-slate-300 rounded-lg font-mono text-xs xs:text-sm hover:bg-slate-700 transition-all border border-slate-600 hover:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/btn"
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            <span className="w-2 h-2 bg-slate-300 rounded-full"></span>
+          <span className="relative z-10 flex items-center justify-center gap-1.5 xs:gap-2">
+            <span className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-slate-300 rounded-full"></span>
             {'> '}next_lesson.sh
           </span>
           <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-slate-700"></div>
