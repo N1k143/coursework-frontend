@@ -52,7 +52,7 @@ export default function Header() {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full"></div>
               </div>
               <span className="text-xl font-bold text-emerald-500 font-mono">
-                Net<span className="text-white">Learn</span>
+                Net<span className="text-white">Course</span>
               </span>
             </div>
           </Link>

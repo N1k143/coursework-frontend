@@ -57,7 +57,7 @@ export default function HomePage() {
                   {'$ ./register.sh'}
                 </Link>
                 <button className="px-8 py-4 bg-transparent text-white rounded-lg font-bold border-2 border-white hover:bg-white hover:text-emerald-600 transition-all font-mono">
-                  {'$ man netlearn'}
+                  {'$ man netcourse'}
                 </button>
               </div>
             </>

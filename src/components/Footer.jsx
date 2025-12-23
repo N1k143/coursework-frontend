@@ -10,7 +10,7 @@ export default function Footer() {
 
           <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
-              <span className="text-2xl font-bold font-mono">NetLearn</span>
+              <span className="text-2xl font-bold font-mono">NetCourse</span>
             </div>
             <p className="text-slate-300 leading-relaxed max-w-md font-mono text-sm">
               Образовательная платформа с курсами и тестами по сетевым технологиям, 
@@ -56,7 +56,7 @@ export default function Footer() {
             <ul className="space-y-3 text-slate-300 font-mono text-sm">
               <li className="flex items-center">
                 <span className="w-5 h-5 bg-emerald-500 rounded-full mr-3 flex items-center justify-center text-xs">📧</span>
-                info@netlearn.com
+                info@netcourse.com
               </li>
               <li className="flex items-center">
                 <span className="w-5 h-5 bg-emerald-500 rounded-full mr-3 flex items-center justify-center text-xs">📱</span>
@@ -89,7 +89,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-400 text-sm font-mono">
-            © 2025 NetLearn | Status: <span className="text-emerald-500">Online</span>
+            © 2025 NetCourse | Status: <span className="text-emerald-500">Online</span>
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">

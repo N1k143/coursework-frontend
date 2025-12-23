@@ -19,7 +19,7 @@ export default function HeroSection({ scrollToAbout }){
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              <span className="text-emerald-500 font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl">root@netlearn:~$</span>
+              <span className="text-emerald-500 font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl">root@netcourse:~$</span>
               <br/>
               <span className="font-sans">Мастер сетевых технологий</span>
             </h1>
