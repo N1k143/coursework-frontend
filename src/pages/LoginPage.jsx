@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import NetworkBackground from "../components/NetworkBackground";
 import { authAPI, handleApiError, sanitizeData } from '../services/api';
+
+const TURNSTILE_SITE_KEY = '0x4AAAAAACITMsfMKl-hLohP';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,8 +12,57 @@ export default function LoginPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
+  const turnstileRef = useRef(null);
+  const widgetIdRef = useRef(null);
+
+  useEffect(() => {
+    const initTurnstile = () => {
+      if (!window.turnstile || widgetIdRef.current !== null) return;
+
+      try {
+        widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token) => {
+            console.log('Turnstile token получен');
+            setTurnstileToken(token);
+          },
+          'expired-callback': () => {
+            console.log('Turnstile token истёк');
+            setTurnstileToken(null);
+          },
+          'error-callback': () => {
+            console.error('Ошибка Turnstile');
+            setTurnstileToken(null);
+            setError('Ошибка проверки капчи. Попробуйте ещё раз.');
+          }
+        });
+      } catch (err) {
+        console.error('Ошибка инициализации Turnstile:', err);
+      }
+    };
+
+    const checkTurnstile = setInterval(() => {
+      if (window.turnstile) {
+        initTurnstile();
+        clearInterval(checkTurnstile);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(checkTurnstile);
+      if (window.turnstile && widgetIdRef.current !== null) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch (err) {
+          console.error('Ошибка при удалении Turnstile:', err);
+        }
+      }
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -37,6 +88,11 @@ export default function LoginPage() {
       return false;
     }
 
+    if (!turnstileToken) {
+      setError('Подтвердите, что вы не робот');
+      return false;
+    }
+
     return true;
   };
 
@@ -53,25 +109,37 @@ export default function LoginPage() {
     try {
       const cleanData = sanitizeData({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        turnstileToken
       });
+
       const result = await authAPI.login(cleanData);
       
       if (result.token && result.user) {
         authAPI.saveAuthData(result.token, result.user);  
 
         const from = location.state?.from || '/courses';
-        
         navigate(from, { replace: true });
-        
       } else {
         throw new Error('Сервер не вернул токен авторизации');
       }
 
     } catch (err) {
       console.error('Ошибка входа:', err);
-      const errorMessage = handleApiError(err, 'Ошибка при входе в систему. Проверьте email и пароль.');
+      const errorMessage = handleApiError(
+        err,
+        'Ошибка при входе в систему. Проверьте email и пароль.'
+      );
       setError(errorMessage);
+
+      if (window.turnstile && widgetIdRef.current !== null) {
+        try {
+          window.turnstile.reset(widgetIdRef.current);
+          setTurnstileToken(null);
+        } catch (resetErr) {
+          console.error('Ошибка сброса Turnstile:', resetErr);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -107,6 +175,7 @@ export default function LoginPage() {
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-slate-500 ml-2 font-mono text-sm">login_terminal</span>
             </div>
+
             {successMessage && (
               <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
                 <div className="text-green-400 font-mono text-sm">
@@ -114,6 +183,7 @@ export default function LoginPage() {
                 </div>
               </div>
             )}
+
             {error && (
               <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
                 <div className="text-red-400 font-mono text-sm">
@@ -137,7 +207,6 @@ export default function LoginPage() {
                   placeholder="user@example.com"
                   required
                   disabled={loading}
-                  defaultValue={location.state?.email || ''}
                 />
               </div>
 
@@ -158,10 +227,14 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div className="flex justify-center">
+                <div ref={turnstileRef}></div>
+              </div>
+
               <button 
                 type="submit"
-                disabled={loading}
-                className="w-full bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-emerald-500"
+                disabled={loading || !turnstileToken}
+                className="w-full bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? '$ Authenticating...' : '$ ./login.sh'}
               </button>
@@ -185,7 +258,6 @@ export default function LoginPage() {
               </Link>
             </div>
           </div>
-
           <div className="mt-8 text-center">
             <div className="bg-slate-900 border border-emerald-500/30 rounded-lg p-4 font-mono text-xs">
               <div className="text-emerald-500 mb-2">System Info:</div>

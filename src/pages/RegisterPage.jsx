@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NetworkBackground from "../components/NetworkBackground";
 import { authAPI, handleApiError, sanitizeData } from '../services/api';
 
+const TURNSTILE_SITE_KEY = '0x4AAAAAACITMsfMKl-hLohP';
+
 export default function RegisterPage() {
-  const [formData, setFormData] =  useState({
+  const [formData, setFormData] = useState({
     email: '',          
     username: '',         
     password: '',       
@@ -13,17 +15,67 @@ export default function RegisterPage() {
   const [error, setError] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState(null);
+
   const navigate = useNavigate();
+  const turnstileRef = useRef(null);
+  const widgetIdRef = useRef(null);
+
+  useEffect(() => {
+    const initTurnstile = () => {
+      if (!window.turnstile || widgetIdRef.current !== null) return;
+
+      try {
+        widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token) => {
+            console.log('Turnstile token получен (регистрация)');
+            setTurnstileToken(token);
+          },
+          'expired-callback': () => {
+            console.log('Turnstile token истёк (регистрация)');
+            setTurnstileToken(null);
+          },
+          'error-callback': () => {
+            console.error('Ошибка Turnstile (регистрация)');
+            setTurnstileToken(null);
+            setError('Ошибка проверки капчи. Попробуйте ещё раз.');
+          }
+        });
+      } catch (err) {
+        console.error('Ошибка инициализации Turnstile:', err);
+      }
+    };
+
+    const checkTurnstile = setInterval(() => {
+      if (window.turnstile) {
+        initTurnstile();
+        clearInterval(checkTurnstile);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(checkTurnstile);
+      if (window.turnstile && widgetIdRef.current !== null) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch (err) {
+          console.error('Ошибка при удалении Turnstile:', err);
+        }
+      }
+    };
+  }, []);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-    if(error) setError('');
-  }
+    if (error) setError('');
+  };
 
   const validateForm = () => {
-    if(!formData.email){
+    if (!formData.email) {
       setError('Email обязателен для заполнения');
       return false;
     }
@@ -47,6 +99,10 @@ export default function RegisterPage() {
       setError('Пароли не совпадают');
       return false;
     }
+    if (!turnstileToken) {
+      setError('Подтвердите, что вы не робот');
+      return false;
+    }
 
     return true;
   };
@@ -56,22 +112,26 @@ export default function RegisterPage() {
     setError('');
     setSuccess('');
     setLoading(true);
-    if(!validateForm()){
+
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
 
-    try{
+    try {
       const cleanData = sanitizeData({
         email: formData.email,
         password: formData.password,
-        username: formData.username
+        username: formData.username,
+        turnstileToken
       });
-      console.log('Отправка данных на сервер:', cleanData);
+
+      console.log('Отправка данных на сервер:', { ...cleanData, password: '***' });
       const result = await authAPI.register(cleanData);
       console.log('Регистрация успешна:', result);
+      
       setSuccess('Регистрация прошла успешно! Перенаправляем на страницу входа...');
-        setTimeout(() => {
+      setTimeout(() => {
         navigate('/login', {
           state: { 
             message: 'Регистрация прошла успешно! Теперь войдите в систему.',
@@ -79,9 +139,19 @@ export default function RegisterPage() {
           }
         });
       }, 2000);
-    }catch (err) {
+    } catch (err) {
+      console.error('Ошибка регистрации:', err);
       const errorMessage = handleApiError(err, 'Произошла ошибка при регистрации. Попробуйте еще раз.');
       setError(errorMessage);
+
+      if (window.turnstile && widgetIdRef.current !== null) {
+        try {
+          window.turnstile.reset(widgetIdRef.current);
+          setTurnstileToken(null);
+        } catch (resetErr) {
+          console.error('Ошибка сброса Turnstile:', resetErr);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -90,14 +160,14 @@ export default function RegisterPage() {
   return (
     <>
       <main className="min-h-screen bg-slate-950 pt-32 pb-20 px-6">
-         <div className="absolute inset-0 opacity-30">
-            <NetworkBackground/>
-         </div>
-         <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>          
+        <div className="absolute inset-0 opacity-30">
+          <NetworkBackground/>
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98120_1px,transparent_1px),linear-gradient(to_bottom,#10b98120_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>          
+        
         <div className="max-w-md mx-auto relative z-10">
           
           <div className="text-center mb-8">
-            
             <h1 className="text-4xl font-bold text-white mb-4">
               <span className="text-emerald-500 font-mono">$</span>
               <span className="font-sans"> user_register</span>
@@ -115,6 +185,7 @@ export default function RegisterPage() {
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-slate-500 ml-2 font-mono text-sm">register_terminal</span>
             </div>
+
             {success && (
               <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
                 <div className="text-green-400 font-mono text-sm">
@@ -122,6 +193,7 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
+
             {error && (
               <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
                 <div className="text-red-400 font-mono text-sm">
@@ -129,9 +201,10 @@ export default function RegisterPage() {
                 </div>
               </div>
             )}
+
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-emerald-500 font-mono text-sm mb-2">
+                <label htmlFor="email" className="block text-emerald-500 font-mono text-sm mb-2">
                   $ email:
                 </label>
                 <input 
@@ -148,7 +221,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-emerald-500 font-mono text-sm mb-2">
+                <label htmlFor="username" className="block text-emerald-500 font-mono text-sm mb-2">
                   $ username:
                 </label>
                 <input 
@@ -167,7 +240,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-emerald-500 font-mono text-sm mb-2">
+                <label htmlFor="password" className="block text-emerald-500 font-mono text-sm mb-2">
                   $ password:
                 </label>
                 <input 
@@ -185,7 +258,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-emerald-500 font-mono text-sm mb-2">
+                <label htmlFor="confirmPassword" className="block text-emerald-500 font-mono text-sm mb-2">
                   $ confirm_password:
                 </label>
                 <input 
@@ -202,11 +275,14 @@ export default function RegisterPage() {
                 />
               </div>
 
+              <div className="flex justify-center pt-2">
+                <div ref={turnstileRef}></div>
+              </div>
+
               <button 
                 type="submit"
-                disabled={loading}
-
-                className="w-full bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono py-3 text-sm mt-4"
+                disabled={loading || !turnstileToken}
+                className="w-full bg-emerald-500 text-slate-950 rounded-lg font-bold hover:bg-emerald-400 transition-all hover:shadow-lg hover:shadow-emerald-500/50 font-mono py-3 text-sm mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? '$ Processing...' : '$ ./create_account.sh'}
               </button>
@@ -238,7 +314,7 @@ export default function RegisterPage() {
                 <div>• Email должен быть действительным</div>
                 <div>• Username: 3-20 символов</div>
                 <div>• Пароль: минимум 8 символов</div>
-                <div>• Принимаю условия использования</div>
+                <div>• Подтвердите, что вы не робот</div>
               </div>
             </div>
           </div>
