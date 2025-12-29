@@ -56,7 +56,7 @@ export default function Footer() {
             <ul className="space-y-3 text-slate-300 font-mono text-sm">
               <li className="flex items-center">
                 <span className="w-5 h-5 bg-emerald-500 rounded-full mr-3 flex items-center justify-center text-xs">📧</span>
-                info@netcourse.com
+                nikitapetrunin296@gmail.com.com
               </li>
               <li className="flex items-center">
                 <span className="w-5 h-5 bg-emerald-500 rounded-full mr-3 flex items-center justify-center text-xs">📱</span>
@@ -92,11 +92,8 @@ export default function Footer() {
             © 2025 NetCourse | Status: <span className="text-emerald-500">Online</span>
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
+            <a href="/privacypolicy" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
               privacy_policy
-            </a>
-            <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
-              terms_of_use
             </a>
           </div>
         </div>
