@@ -1,16 +1,50 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Netcourse Frontend (React + Vite)
 
-Currently, two official plugins are available:
+This project is the frontend part of Netcourse — a web-based learning platform for hosting and completing online courses.  
+The application is built with React and Vite and provides a fast, responsive user interface for interacting with the backend API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+- React  
+- JavaScript  
+- Vite  
+- Tailwind CSS  
+- ESLint  
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Features
 
-## Expanding the ESLint configuration
+- Landing page with platform description  
+- Course catalog with category filtering  
+- User authentication  
+- Course enrollment and learning process  
+- Lessons and quizzes  
+- User profile with progress tracking  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+To run the project locally:
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+The application will be available at the address shown in the console (usually `http://localhost:5173`).
+
+## Notes
+
+This frontend application requires a running backend server for full functionality.  
+Make sure the API endpoint is correctly configured before using the application.
+
+## Development
+
+This project uses Vite with React for fast development and hot module replacement (HMR).  
+Tailwind CSS is used for styling and building a responsive, consistent user interface.
