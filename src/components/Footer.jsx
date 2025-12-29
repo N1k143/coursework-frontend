@@ -44,7 +44,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono text-sm">
+                <a href="/about" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono text-sm">
                   О нас
                 </a>
               </li>

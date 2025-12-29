@@ -23,15 +23,24 @@ The application is built with React and Vite and provides a fast, responsive use
 
 ## Getting Started
 
-To run the project locally:
+### Clone the repository
 
-1. Install dependencies:
+To get the project on your local machine, run:
+
+```bash
+git clone https://github.com/N1k143/coursework-frontend
+cd coursework-frontend
+```
+
+Replace the URL with the actual repository URL.
+
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Start the development server:
+### Start the development server
 
 ```bash
 npm run dev

@@ -56,9 +56,9 @@ export default function HomePage() {
                 <Link to="/register" className="px-8 py-4 bg-slate-950 text-emerald-500 rounded-lg font-bold hover:bg-slate-900 transition-all hover:shadow-2xl font-mono">
                   {'$ ./register.sh'}
                 </Link>
-                <button className="px-8 py-4 bg-transparent text-white rounded-lg font-bold border-2 border-white hover:bg-white hover:text-emerald-600 transition-all font-mono">
+                <Link to="/about" className="px-8 py-4 bg-transparent text-white rounded-lg font-bold border-2 border-white hover:bg-white hover:text-emerald-600 transition-all font-mono">
                   {'$ man netcourse'}
-                </button>
+                </Link>
               </div>
             </>
           )}
