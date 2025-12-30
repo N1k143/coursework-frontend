@@ -44,9 +44,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="/about" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono text-sm">
+                <Link to="/about" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono text-sm">
                   О нас
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -92,9 +92,9 @@ export default function Footer() {
             © 2025 NetCourse | Status: <span className="text-emerald-500">Online</span>
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="/privacypolicy" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
+            <Link to="/privacypolicy" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
               privacy_policy
-            </a>
+            </Link>
           </div>
         </div>
 
