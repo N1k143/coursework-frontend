@@ -89,7 +89,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-400 text-sm font-mono">
-            © 2025 NetCourse | Status: <span className="text-emerald-500">Online</span>
+            © 2026 NetCourse | Status: <span className="text-emerald-500">Online</span>
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacypolicy" className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-mono">
